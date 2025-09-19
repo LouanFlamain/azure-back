@@ -7,13 +7,16 @@ const votesIn = input.cosmosDB({
   sqlQuery: "SELECT * FROM c",
 });
 
+async function getVotesHandler(_req, ctx) {
+  const docs = ctx?.extraInputs?.get ? ctx.extraInputs.get(votesIn) || [] : [];
+  return { status: 200, jsonBody: docs };
+}
+
 app.http("getVotes", {
   methods: ["GET"],
   authLevel: "anonymous",
   extraInputs: [votesIn],
-  handler: async (_req, ctx) => {
-    console.log("test");
-    const docs = ctx.extraInputs.get(votesIn) || [];
-    return { status: 200, jsonBody: docs };
-  },
+  handler: getVotesHandler,
 });
+
+module.exports = { getVotesHandler };
